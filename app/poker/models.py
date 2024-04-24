@@ -16,7 +16,8 @@ class PokerSessionManager(models.Manager):
 
         Start at 2023-10-01, because we only started collecting detailed logs after that date.
         """
-        sessions = self.exclude(reveal_count=0).filter(created__gte="2023-10-01")
+        sessions = self.exclude(reveal_count=0).filter(
+            created__gte="2023-10-01")
         avg_reveal_count = sessions.aggregate(mean=Avg("reveal_count"))["mean"]
         user_count = sessions.values_list(Count("users"), flat=True)
 
@@ -33,9 +34,12 @@ class PokerSessionManager(models.Manager):
         return {
             "basic": (
                 ("Sessions", sessions.count()),
-                ("Total votes", sum(deck.total() for deck in vote_counter.values())),
-                ("Average #rounds", round(avg_reveal_count, 1) if avg_reveal_count else "-"),
-                ("Average #participants", round(sum(user_count) / len(user_count), 1) if user_count else "-"),
+                ("Total votes", sum(deck.total()
+                 for deck in vote_counter.values())),
+                ("Average #rounds", round(avg_reveal_count, 1)
+                 if avg_reveal_count else "-"),
+                ("Average #participants", round(sum(user_count) /
+                 len(user_count), 1) if user_count else "-"),
             ),
             "decks": [order_by_frequency(counter) for counter in vote_counter.values()],
         }
@@ -52,8 +56,17 @@ class PokerSession(models.Model):
     class Decks(models.TextChoices):
         TSHIRT = "tshirt", "T-shirt"
         FIBONACCI = "fibonacci", "Fibonacci"
+        MONTHS = "months", "Months"
 
-    deck = models.CharField(max_length=20, choices=Decks.choices, default=Decks.TSHIRT)
+    DECK_TYPES = {
+        Decks.FIBONACCI: ["0", "1/2", "1", "2", "3", "5", "8",
+                          "13", "20", "?", "∞", "☕️"],
+        Decks.TSHIRT: ["XS", "S", "M", "L", "XL", "?", "☕️"],
+        Decks.MONTHS: ["1", "2", "3", "4", "5", "6", "8", "12", "18", "24"],
+    }
+
+    deck = models.CharField(
+        max_length=20, choices=Decks.choices, default=Decks.TSHIRT)
 
     objects = PokerSessionManager()
 
@@ -82,7 +95,8 @@ class PokerSession(models.Model):
             self.save()
 
             votes = list(self.active_users.values_list("vote", flat=True))
-            self.logs.create(event="reveal", data=dict(round=self.reveal_count, deck=self.deck, votes=votes))
+            self.logs.create(event="reveal", data=dict(
+                round=self.reveal_count, deck=self.deck, votes=votes))
 
     @property
     def is_voting_complete(self):
@@ -98,8 +112,10 @@ class PokerSession(models.Model):
         self.logs.create(event="clear")
 
     def add_user(self, name, is_spectator=False) -> "User":
-        user, created = self.users.get_or_create(name=name, is_spectator=is_spectator, is_active=True)
-        self.logs.create(event="add_user", data=dict(name=name, is_spectator=is_spectator))
+        user, created = self.users.get_or_create(
+            name=name, is_spectator=is_spectator, is_active=True)
+        self.logs.create(event="add_user", data=dict(
+            name=name, is_spectator=is_spectator))
         return user
 
     def deactivate_user(self, user_id) -> None:
@@ -109,11 +125,12 @@ class PokerSession(models.Model):
         return list(self.active_users.values(*USER_FIELDS))
 
     def deck_as_list(self) -> list[str]:
-        return ("0,½,1,2,3,5,8,13,20,?,∞,☕️" if self.is_fibonacci else "XS,S,M,L,XL,?,☕️").split(",")
+        return PokerSession.DECK_TYPES[self.deck]
 
     def log_as_list(self) -> list[dict[str, str, dict]]:
         return list(
-            {"time": timezone.localtime(created).strftime("%H:%M:%I"), "event": event, "data": data}
+            {"time": timezone.localtime(created).strftime(
+                "%H:%M:%I"), "event": event, "data": data}
             for created, event, data in self.logs.values_list("created", "event", "data")[:20]
         )
 
@@ -128,7 +145,8 @@ class PokerSession(models.Model):
 
 
 class Log(models.Model):
-    session = models.ForeignKey(PokerSession, on_delete=models.CASCADE, related_name="logs")
+    session = models.ForeignKey(
+        PokerSession, on_delete=models.CASCADE, related_name="logs")
 
     created = models.DateTimeField(auto_now_add=True)
     event = models.CharField(max_length=100)
@@ -140,12 +158,14 @@ class Log(models.Model):
 
 class User(models.Model):
     name = models.CharField(max_length=30)
-    is_spectator = models.BooleanField(default=False, help_text="Spectators cannot vote themselves")
+    is_spectator = models.BooleanField(
+        default=False, help_text="Spectators cannot vote themselves")
     is_active = models.BooleanField(
         default=False, help_text="Users are active if they have an active websocket connection"
     )
     created = models.DateTimeField(auto_now_add=True)
-    session = models.ForeignKey(PokerSession, on_delete=models.CASCADE, related_name="users")
+    session = models.ForeignKey(
+        PokerSession, on_delete=models.CASCADE, related_name="users")
 
     vote = models.CharField(max_length=10, null=True)
 
