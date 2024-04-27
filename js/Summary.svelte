@@ -3,6 +3,7 @@ import Card from './Card.svelte';
 import type { VoteCount } from './types.d';
 
 export let votes: Array<VoteCount>;
+export let average: string;
 export let random: () => number = () => 0;
 </script>
 
@@ -15,6 +16,10 @@ export let random: () => number = () => 0;
     {:else}
         <div class="col text-center p-2">No votes</div>
     {/each}
+    <div class="d-inline-block text-center card-wrapper">
+        <Card rotation={random()}>{average}</Card>
+        <div class="count">AVG</div>
+    </div>
 </div>
 
 <style>

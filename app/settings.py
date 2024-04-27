@@ -25,7 +25,7 @@ SECRET_KEY = env("SECRET_KEY", "django-insecure-94=1j=n6rby0fglmw_%@#_n8oe65+q=f
 
 DEBUG = not IS_PRODUCTION
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 if HOSTNAME := env("HOSTNAME"):
     ALLOWED_HOSTS.append(HOSTNAME)
 

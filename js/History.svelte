@@ -1,6 +1,6 @@
 <script>
 import { log, revealCount, votes } from './stores';
-import { countVotes } from './utils';
+import { countVotes, averageVotes } from './utils';
 import Summary from './Summary.svelte';
 
 let collapsed = true;
@@ -32,6 +32,7 @@ function toggleCollapsed() {
     <div class="d-flex overflow-scroll mb-2 text-muted">
         {#each $log.filter((x) => x.event == 'reveal') as { data }}
             {@const voteSummary = countVotes(data.votes)}
+            {@const voteAverage = averageVotes(data.votes)}
             <small class="voting-round ms-1 text-center">
                 Round {data.round}
                 {#if voteSummary.length == 0}
@@ -40,7 +41,7 @@ function toggleCollapsed() {
             </small>
             {#if voteSummary.length > 0}
                 <div class="small history-item text-start rounded flex-shrink-0 m-1 p-1">
-                    <Summary votes={voteSummary} size="sm" />
+                    <Summary votes={voteSummary} average={voteAverage} size="sm" />
                 </div>
             {/if}
         {/each}

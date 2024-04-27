@@ -17,6 +17,7 @@ import {
     user,
     castVote,
     votes,
+    average,
     icon,
     revealCount,
     showConfetti,
@@ -65,7 +66,7 @@ $: if (innerWidth) {
             {#if $showConfetti}
                 <div use:confetti />
             {/if}
-            <Summary votes={$votes} {random} style="color: white;" class="p-2 mb-2 text-center rounded" />
+            <Summary votes={$votes} average={$average} {random} style="color: white;" class="p-2 mb-2 text-center rounded" />
         </div>
     {/if}
 </div>

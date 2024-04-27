@@ -16,7 +16,9 @@ import { autoReveal, deck, decks, isRevealed, clearVotes, revealVotes, votingCom
             <label class="btn btn-outline-primary" for="deck-{value}"> {label}</label>
         {/each}
     </div>
-    &nbsp;
+</div>
+
+<div class="d-flex justify-content-center m-3">
 
     {#if !$autoReveal}
         {#if !$isRevealed && $votingComplete}

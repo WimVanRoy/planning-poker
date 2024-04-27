@@ -7,14 +7,14 @@ import { countVotes } from './utils';
 
 describe('Summary.svelte', () => {
     test('no votes', () => {
-        render(Summary, { props: { votes: [] } });
+        render(Summary, { props: { votes: [], average: 0 } });
 
         expect(screen.getByText('No votes')).toBeInTheDocument();
     });
 
     test('votes', () => {
         const votes: Array<VoteCount> = countVotes(['s', 's', 'm', 'm', 'm']);
-        render(Summary, { props: { votes: votes } });
+        render(Summary, { props: { votes: votes, average: 5 } });
 
         expect(screen.queryByText('No votes')).not.toBeInTheDocument();
     });

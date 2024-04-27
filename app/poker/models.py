@@ -54,6 +54,7 @@ class PokerSession(models.Model):
     reveal_count = models.IntegerField(default=0)
 
     class Decks(models.TextChoices):
+        REACH = "reach", "Reach"
         TSHIRT = "tshirt", "T-shirt"
         FIBONACCI = "fibonacci", "Fibonacci"
         MONTHS = "months", "Months"
@@ -62,7 +63,9 @@ class PokerSession(models.Model):
         Decks.FIBONACCI: ["0", "1/2", "1", "2", "3", "5", "8",
                           "13", "20", "?", "∞", "☕️"],
         Decks.TSHIRT: ["XS", "S", "M", "L", "XL", "?", "☕️"],
-        Decks.MONTHS: ["1", "2", "3", "4", "5", "6", "8", "12", "18", "24"],
+        Decks.MONTHS: ["1", "2", "3", "4", "6", "9",
+                       "12", "18", "24", "36", "48"],
+        Decks.REACH: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
     }
 
     deck = models.CharField(

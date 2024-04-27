@@ -63,3 +63,39 @@ export function countVotes(votes: Array<string | null>): Array<VoteCount> {
     const voteCounts: Array<VoteCount> = Object.entries(_votes);
     return voteCounts.sort((a, b) => b[1] - a[1]);
 }
+
+export function averageVotes(votes: Array<string | null>): string {
+    let _votes = 0.0;
+    let _count = 0.0;
+    votes.forEach((vote: string | null) => {
+        if (vote != null) {
+            _count += 1;
+            if (vote == "L") {
+                _votes += 2;
+            } else if (vote == "XL") {
+                _votes += 3;
+            } else if (vote == "M") {
+                _votes += 1;
+            } else if (vote == "S") {
+                _votes += 0.5;
+            } else if (vote == "XS") {
+                _votes += 0.25;
+            } else if (vote == "1/2") {
+                _votes += 0.5;
+            } else if (vote == "☕️") {
+                _votes += 0.1;
+            } else {
+                let val = parseFloat(vote);
+                if (!isNaN(val)) {
+                    _votes += val;
+                } else {
+                    _count -= 1;
+                }
+            }
+        }
+    });
+    if (_count == 0.0) {
+        return "-";
+    }
+    return (Math.round(10 * _votes / _count) / 10).toString();
+}

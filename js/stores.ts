@@ -1,7 +1,7 @@
 import { derived, writable, get } from 'svelte/store';
 
 import type { Participant } from './types.d';
-import { countVotes } from './utils';
+import { countVotes, averageVotes } from './utils';
 
 export const participants = writable<Array<Participant>>([]);
 export const choices = writable<Array<string>>([]);
@@ -17,6 +17,10 @@ export const revealCount = writable(0);
 // Derive a sorted list of (card, votes)-pairs off of the participants store:
 export const votes = derived(participants, ($participants: Array<Participant>) => {
     return countVotes($participants.map((p: Participant) => p.vote));
+});
+
+export const average = derived(participants, ($participants: Array<Participant>) => {
+    return averageVotes($participants.map((p: Participant) => p.vote));
 });
 
 // Show confetti if votes are revealed and all participants voted the same and there are more than 1 participants.
