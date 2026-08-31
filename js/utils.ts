@@ -84,6 +84,8 @@ export function averageVotes(votes: Array<string | null>): string {
                 _votes += 0.5;
             } else if (vote == "☕️") {
                 _votes += 0.1;
+            } else if (vote == "∞") {
+                _votes += Number.POSITIVE_INFINITY;
             } else {
                 let val = parseFloat(vote);
                 if (!isNaN(val)) {

@@ -18,4 +18,10 @@ describe('Summary.svelte', () => {
 
         expect(screen.queryByText('No votes')).not.toBeInTheDocument();
     });
+    test('votes', () => {
+        const votes: Array<VoteCount> = countVotes(['s', 's', 'm', 'm', '∞']);
+        render(Summary, { props: { votes: votes, average: Number.POSITIVE_INFINITY } });
+
+        expect(screen.queryByText('No votes')).not.toBeInTheDocument();
+    });
 });
