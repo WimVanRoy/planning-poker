@@ -17,7 +17,7 @@ export let random: () => number = () => 0;
         <div class="col text-center p-2">No votes</div>
     {/each}
     <div class="d-inline-block text-center card-wrapper">
-        <Card rotation={random()}>{average}</Card>
+        <Card rotation={random()}>{average== Number.POSITIVE_INFINITY ? "∞" : average}</Card>
         <div class="count">AVG</div>
     </div>
 </div>
